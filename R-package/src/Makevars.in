@@ -3,6 +3,10 @@ PKGROOT=../../
 ENABLE_STD_THREAD=1
 # _*_ mode: Makefile; _*_
 
+.PHONY: all xgblib
+all: $(SHLIB)
+$(SHLIB): xgblib
+
 CXX_STD = CXX14
 
 XGB_RFLAGS = -DXGBOOST_STRICT_R_MODE=1 -DDMLC_LOG_BEFORE_THROW=0\
@@ -22,3 +26,8 @@ PKG_LIBS = @OPENMP_CXXFLAGS@ @OPENMP_LIB@ @ENDIAN_FLAG@ @BACKTRACE_LIB@ -pthread
 OBJECTS= ./xgboost_R.o ./xgboost_custom.o ./xgboost_assert.o ./init.o\
          $(PKGROOT)/amalgamation/xgboost-all0.o $(PKGROOT)/amalgamation/dmlc-minimum0.o\
          $(PKGROOT)/rabit/src/engine_empty.o $(PKGROOT)/rabit/src/c_api.o
+
+xgblib:
+	$(CXX) $(PKG_CPPFLAGS) $(PKG_CXXFLAGS) -c $(PKGROOT)/amalgamation/xgboost-all0.cc -o $(PKGROOT)/amalgamation/xgboost-all0.o
+
+$(OBJECTS) : xgblib
