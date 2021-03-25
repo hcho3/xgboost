@@ -180,6 +180,14 @@ jobs:
         cd jvm-packages
         mvn test -B -pl :xgboost4j_2.12
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+      if: |
+        (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/release_')) &&
+        matrix.os == 'windows-latest'
+
     - name: Publish artifact xgboost4j.dll to S3
       run: |
         cd lib/
